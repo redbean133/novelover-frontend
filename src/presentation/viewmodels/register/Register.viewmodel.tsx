@@ -8,6 +8,7 @@ import {
 import type { RootState } from "@/presentation/redux/store";
 import {
   validateConfirmPassword,
+  validateDisplayName,
   validatePassword,
   validateUsername,
 } from "@/shared/utils/validate";
@@ -22,9 +23,11 @@ export const RegisterViewModel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
+    displayName,
     username,
     password,
     confirmPassword,
+    isValidDisplayName,
     isValidPassword,
     isValidUsername,
     isValidConfirmPassword,
@@ -32,6 +35,16 @@ export const RegisterViewModel = () => {
 
   const updateRegister = (data: Partial<IUserState["register"]>) => {
     dispatch(updateRegisterState(data));
+  };
+
+  const onDisplayNameChange = (value: string) => {
+    const validation = validateDisplayName(value);
+    updateRegister({
+      displayName: value,
+      isValidDisplayName: validation.isValid,
+      displayNameValidation: validation.message,
+      registerValidation: "",
+    });
   };
 
   const onUsernameChange = (value: string) => {
@@ -72,12 +85,19 @@ export const RegisterViewModel = () => {
 
   const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    onDisplayNameChange(displayName);
     onUsernameChange(username);
     onPasswordChange(password);
 
-    if (isValidUsername && isValidPassword && isValidConfirmPassword) {
+    if (
+      isValidUsername &&
+      isValidPassword &&
+      isValidConfirmPassword &&
+      isValidDisplayName
+    ) {
+      updateRegister({ isLoading: true });
       try {
-        await userUseCase.register(username, password);
+        await userUseCase.register(displayName, username, password);
         toast.success("Đăng ký tài khoản thành công. Vui lòng đăng nhập.");
         navigate("/login");
       } catch (error) {
@@ -87,6 +107,8 @@ export const RegisterViewModel = () => {
               ? error.response?.data.message
               : "Lỗi hệ thống, mời thử lại.",
         });
+      } finally {
+        updateRegister({ isLoading: false });
       }
     }
   };
@@ -99,6 +121,7 @@ export const RegisterViewModel = () => {
 
   return {
     updateRegister,
+    onDisplayNameChange,
     onUsernameChange,
     onPasswordChange,
     onConfirmPasswordChange,

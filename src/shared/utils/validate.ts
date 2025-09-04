@@ -3,6 +3,32 @@ export interface IValidationResult {
   message: string;
 }
 
+export const validateDisplayName = (displayName: string): IValidationResult => {
+  if (!displayName || displayName.trim().length === 0) {
+    return { isValid: false, message: "Tên hiển thị không được để trống" };
+  }
+
+  if (displayName.length < 3 || displayName.length > 32) {
+    return {
+      isValid: false,
+      message: "Tên hiển thị phải có độ dài từ 3 đến 32 ký tự",
+    };
+  }
+
+  const regex = /^[\p{L} ]+$/u;
+  if (!regex.test(displayName)) {
+    return {
+      isValid: false,
+      message: "Tên hiển thị chỉ được chứa chữ cái và dấu cách",
+    };
+  }
+
+  return {
+    isValid: true,
+    message: "Tên hiển thị hợp lệ",
+  };
+};
+
 export const validateUsername = (username: string): IValidationResult => {
   if (!username) {
     return {
@@ -39,19 +65,18 @@ export const validateUsername = (username: string): IValidationResult => {
 };
 
 export const validateEmail = (email: string): IValidationResult => {
-  if (!email) return { isValid: false, message: "Email không được để trống" };
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!regex.test(email))
+  if (email && !regex.test(email))
     return { isValid: false, message: "Email không hợp lệ" };
   return { isValid: true, message: "Email hợp lệ" };
 };
 
 export const validatePassword = (password: string): IValidationResult => {
   if (!password)
-    return { isValid: false, message: "Password không được để trống" };
+    return { isValid: false, message: "Mật khẩu không được để trống" };
   if (password.length < 8)
-    return { isValid: false, message: "Password phải có ít nhất 8 ký tự" };
-  return { isValid: true, message: "Password hợp lệ" };
+    return { isValid: false, message: "Mật khẩu phải có ít nhất 8 ký tự" };
+  return { isValid: true, message: "Mật khẩu hợp lệ" };
 };
 
 export const validateConfirmPassword = (
@@ -72,5 +97,22 @@ export const validateConfirmPassword = (
     };
   }
 
-  return { isValid: true, message: "Confirm password hợp lệ" };
+  return { isValid: true, message: "Mật khẩu xác nhận hợp lệ" };
+};
+
+export const validateNewPassword = (
+  currentPassword: string,
+  newPassword: string
+): IValidationResult => {
+  if (!newPassword)
+    return { isValid: false, message: "Mật khẩu mới không được để trống" };
+  if (newPassword.length < 8)
+    return { isValid: false, message: "Mật khẩu mới phải có ít nhất 8 ký tự" };
+  if (newPassword === currentPassword) {
+    return {
+      isValid: false,
+      message: "Mật khẩu mới không được trùng với mật khẩu hiện tại",
+    };
+  }
+  return { isValid: true, message: "Mật khẩu mới hợp lệ" };
 };
