@@ -12,13 +12,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { decodeJwt } from "@/shared/utils/helpers";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
+import toast from "react-hot-toast";
 
 export const LoginViewModel = () => {
   const userUseCase = UserUseCase(new UserRepositoryImpl());
   const dispatch = useDispatch();
-  const { username, password, isValidPassword, isValidUsername } = useSelector(
-    (state: RootState) => state.user.login
-  );
+  const { isLoading, username, password, isValidPassword, isValidUsername } =
+    useSelector((state: RootState) => state.user.login);
 
   const updateLogin = (data: Partial<IUserState["login"]>) => {
     dispatch(updateLoginState(data));
@@ -44,25 +45,29 @@ export const LoginViewModel = () => {
     });
   };
 
+  const saveTokenInformation = (accessToken: string) => {
+    const decodeToken = decodeJwt(accessToken);
+    dispatch(
+      updateCurrentUser({
+        id: decodeToken.sub,
+        role: decodeToken.role,
+        username: decodeToken.username,
+      })
+    );
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("accessTokenExpiry", decodeToken.exp.toString());
+  };
+
   const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    updateLogin({ isLoading: true });
     onUsernameChange(username);
     onPasswordChange(password);
 
     if (isValidUsername && isValidPassword) {
       try {
         const { accessToken } = await userUseCase.login(username, password);
-
-        const decodeToken = decodeJwt(accessToken);
-        dispatch(
-          updateCurrentUser({
-            id: decodeToken.sub,
-            role: decodeToken.role,
-            username: decodeToken.username,
-          })
-        );
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("accessTokenExpiry", decodeToken.exp.toString());
+        saveTokenInformation(accessToken);
       } catch (error) {
         updateLogin({
           loginValidation:
@@ -70,9 +75,29 @@ export const LoginViewModel = () => {
               ? error.response?.data.message
               : "Lỗi hệ thống, mời thử lại.",
         });
+      } finally {
+        updateLogin({ isLoading: false });
       }
     }
   };
+
+  const loginWithGoogle = useGoogleLogin({
+    flow: "auth-code",
+    onSuccess: async (response) => {
+      try {
+        const { accessToken } = await userUseCase.loginWithGoogle(
+          response.code
+        );
+        saveTokenInformation(accessToken);
+      } catch (error) {
+        toast.error(
+          error instanceof AxiosError
+            ? error.response?.data.message
+            : "Lỗi hệ thống, mời thử lại."
+        );
+      }
+    },
+  });
 
   useEffect(() => {
     return () => {
@@ -85,5 +110,6 @@ export const LoginViewModel = () => {
     onUsernameChange,
     onPasswordChange,
     onSubmitForm,
+    loginWithGoogle,
   };
 };

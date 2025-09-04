@@ -1,33 +1,64 @@
-import { UserRepositoryImpl } from "@/data/repositories-implementation/user.repositoryImpl";
-import { UserUseCase } from "@/domain/usecases/user.usecase";
-import { reinitCurrentUser } from "@/presentation/redux/slices/user.slice";
 import type { RootState } from "@/presentation/redux/store";
+import { useSelector } from "react-redux";
+import menuIcon from "@/assets/icon/menuIcon.svg";
+import { H1 } from "@/presentation/components/typography/H1/H1";
 import { Button } from "@/presentation/shadcn-ui/components/ui/button";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { HomeViewModel } from "@/presentation/viewmodels/home/Home.viewmodel";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/presentation/shadcn-ui/components/ui/dropdown-menu";
 
 const HomeView = () => {
-  const dispatch = useDispatch();
-  const userUseCase = UserUseCase(new UserRepositoryImpl());
-  const username = useSelector(
-    (state: RootState) => state.user.current.username
+  const { id: currentUserId } = useSelector(
+    (state: RootState) => state.user.current
   );
 
-  const handleLogout = async () => {
-    try {
-      await userUseCase.logout();
-      dispatch(reinitCurrentUser());
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+  const {
+    onClickLoginButton,
+    onClickViewProfile,
+    onClickManageProfile,
+    handleLogout,
+    goToHomePage,
+  } = HomeViewModel();
 
   return (
-    <div>
-      Home {username}
-      <Button onClick={handleLogout}>Logout</Button>
-      <Link to="/login">To Login</Link>
-    </div>
+    <header className="flex flex-row items-center justify-between">
+      <H1 onClick={goToHomePage}>Novelover</H1>
+      {currentUserId ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon" className="size-8">
+              <img src={menuIcon} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-36" align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={onClickViewProfile}>
+                Trang cá nhân
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onClickManageProfile}>
+                Quản lý thông tin
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={handleLogout}>
+                Đăng xuất
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Button variant="secondary" onClick={onClickLoginButton}>
+          Đăng nhập
+        </Button>
+      )}
+    </header>
   );
 };
 

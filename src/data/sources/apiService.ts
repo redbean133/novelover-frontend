@@ -11,7 +11,7 @@ const passthroughAuth = [
 const apiService = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
-  timeout: 5000,
+  timeout: 15000,
 });
 
 apiService.interceptors.request.use(

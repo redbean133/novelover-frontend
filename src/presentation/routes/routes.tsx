@@ -4,6 +4,9 @@ import LoginView from "../views/login/Login.view";
 import { Root } from "./Root";
 import { OnlyGuestRoute } from "./OnlyGuest.route";
 import { RegisterView } from "../views/register/Register.view";
+import { ProfileView } from "../views/profile/Profile.view";
+import { ManageProfileView } from "../views/manage-profile/ManageProfile.view";
+import { VerifyEmailView } from "../views/profile/VerifyEmail.view";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +28,18 @@ export const router = createBrowserRouter([
             element: <RegisterView />,
           },
         ],
+      },
+      {
+        path: "/users/:id",
+        element: <ProfileView />,
+      },
+      {
+        path: "users/:id/manage",
+        element: <ManageProfileView />,
+      },
+      {
+        path: "email-verify",
+        element: <VerifyEmailView />,
       },
     ],
   },

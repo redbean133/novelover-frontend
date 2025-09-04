@@ -1,5 +1,5 @@
+import { ButtonWithLoading } from "@/presentation/components/button/ButtonWithLoading";
 import type { RootState } from "@/presentation/redux/store";
-import { Button } from "@/presentation/shadcn-ui/components/ui/button";
 import { Input } from "@/presentation/shadcn-ui/components/ui/input";
 import { Label } from "@/presentation/shadcn-ui/components/ui/label";
 import { cn } from "@/presentation/shadcn-ui/lib/utils";
@@ -11,6 +11,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const {
+    isLoading,
     username,
     password,
     isValidUsername,
@@ -28,7 +29,7 @@ export function LoginForm({
       {...props}
     >
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Đăng nhập tài khoản</h1>
+        <h1 className="text-2xl font-bold">Đăng nhập</h1>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
@@ -69,9 +70,13 @@ export function LoginForm({
           {loginValidation && (
             <p className="text-red-500 text-xs mb-2">{loginValidation}</p>
           )}
-          <Button type="submit" className="w-full">
+          <ButtonWithLoading
+            type="submit"
+            className="w-full"
+            isLoading={isLoading}
+          >
             Đăng nhập
-          </Button>
+          </ButtonWithLoading>
         </div>
       </div>
     </form>

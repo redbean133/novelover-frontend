@@ -1,5 +1,5 @@
+import { ButtonWithLoading } from "@/presentation/components/button/ButtonWithLoading";
 import type { RootState } from "@/presentation/redux/store";
-import { Button } from "@/presentation/shadcn-ui/components/ui/button";
 import { Input } from "@/presentation/shadcn-ui/components/ui/input";
 import { Label } from "@/presentation/shadcn-ui/components/ui/label";
 import { cn } from "@/presentation/shadcn-ui/lib/utils";
@@ -11,18 +11,23 @@ export const RegisterForm = ({
   ...props
 }: React.ComponentProps<"form">) => {
   const {
+    isLoading,
+    displayName,
     username,
     password,
     confirmPassword,
+    isValidDisplayName,
     isValidUsername,
     isValidPassword,
     isValidConfirmPassword,
+    displayNameValidation,
     usernameValidation,
     passwordValidation,
     confirmPasswordValidation,
     registerValidation,
   } = useSelector((state: RootState) => state.user.register);
   const {
+    onDisplayNameChange,
     onUsernameChange,
     onPasswordChange,
     onConfirmPasswordChange,
@@ -39,6 +44,22 @@ export const RegisterForm = ({
         <h1 className="text-2xl font-bold">Đăng ký tài khoản</h1>
       </div>
       <div className="grid gap-6">
+        <div className="grid gap-3">
+          <Label htmlFor="username">Tên hiển thị</Label>
+          <Input
+            id="displayName"
+            type="text"
+            error={!isValidDisplayName && !!displayNameValidation}
+            value={displayName}
+            onChange={(e) => onDisplayNameChange(e.target.value)}
+            autoComplete="new-password"
+          />
+          {!isValidDisplayName && displayNameValidation && (
+            <p className="text-red-500 text-xs transition-all duration-300">
+              {displayNameValidation}
+            </p>
+          )}
+        </div>
         <div className="grid gap-3">
           <Label htmlFor="username">Tên đăng nhập</Label>
           <Input
@@ -88,9 +109,13 @@ export const RegisterForm = ({
           {registerValidation && (
             <p className="text-red-500 text-xs mb-2">{registerValidation}</p>
           )}
-          <Button type="submit" className="w-full">
+          <ButtonWithLoading
+            type="submit"
+            className="w-full"
+            isLoading={isLoading}
+          >
             Đăng ký
-          </Button>
+          </ButtonWithLoading>
         </div>
       </div>
     </form>

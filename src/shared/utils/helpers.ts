@@ -23,3 +23,25 @@ export const getTokenExpiry = (token: string) => {
   const decoded = decodeJwt(token);
   return decoded.exp;
 };
+
+export const isChanged = (
+  origin: Record<string, unknown>,
+  update: Record<string, unknown>,
+  compareKeys: string[]
+): boolean => {
+  return compareKeys.some((key) => {
+    if (!(key in origin) || !(key in update)) {
+      return false;
+    }
+
+    const originValue = origin[key];
+    const updateValue = update[key];
+
+    if (originValue !== updateValue) {
+      console.log(key);
+      return true;
+    }
+
+    return false;
+  });
+};
