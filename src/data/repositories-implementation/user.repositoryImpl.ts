@@ -5,10 +5,12 @@ import type {
 } from "@/domain/entities/user.entity";
 import type { IUserRepository } from "@/domain/repositories-interface/user.repository";
 import apiService from "../sources/apiService";
+import type { IUserInfoInFollow } from "@/domain/entities/follow.entity";
+import type { IProfileInfo } from "@/domain/entities/profile.entity";
 
 export class UserRepositoryImpl implements IUserRepository {
   async login(username: string, password: string): Promise<ILoginResponse> {
-    const response = await apiService.post<ILoginResponse>("/user/login", {
+    const response = await apiService.post<ILoginResponse>("/users/login", {
       username,
       password,
     });
@@ -20,7 +22,7 @@ export class UserRepositoryImpl implements IUserRepository {
     username: string,
     password: string
   ): Promise<IUser> {
-    const response = await apiService.post<IUser>("/user/register", {
+    const response = await apiService.post<IUser>("/users/register", {
       displayName,
       username,
       password,
@@ -30,23 +32,23 @@ export class UserRepositoryImpl implements IUserRepository {
 
   async refreshToken(): Promise<ILoginResponse> {
     const response = await apiService.post<ILoginResponse>(
-      "/user/refresh-token"
+      "/users/refresh-token"
     );
     return response.data;
   }
 
   async logout(): Promise<void> {
-    await apiService.post("/user/logout");
+    await apiService.post("/users/logout");
   }
 
   async getUserInformation(userId: string): Promise<IUser> {
-    const response = await apiService.get<IUser>(`/user/${userId}`);
+    const response = await apiService.get<IUser>(`/users/${userId}`);
     return response.data;
   }
 
   async loginWithGoogle(code: string): Promise<ILoginResponse> {
     const response = await apiService.post<ILoginResponse>(
-      `/user/google-login`,
+      `/users/google-login`,
       { code }
     );
     return response.data;
@@ -59,7 +61,7 @@ export class UserRepositoryImpl implements IUserRepository {
     const response = await apiService.post<{
       success: boolean;
       message: string;
-    }>(`/user/${userId}/send-verify-email`, { userId, email });
+    }>(`/users/${userId}/send-verify-email`, { userId, email });
     return response.data;
   }
 
@@ -69,12 +71,12 @@ export class UserRepositoryImpl implements IUserRepository {
     const response = await apiService.post<{
       success: boolean;
       message: string;
-    }>(`/user/verify-email`, { token });
+    }>(`/users/verify-email`, { token });
     return response.data;
   }
 
   async updateUser(userId: string, data: IUpdateUserDto): Promise<IUser> {
-    const response = await apiService.patch<IUser>(`/user/${userId}`, data);
+    const response = await apiService.patch<IUser>(`/users/${userId}`, data);
     return response.data;
   }
 
@@ -92,7 +94,7 @@ export class UserRepositoryImpl implements IUserRepository {
     const response = await apiService.patch<{
       avatarUrl?: string;
       coverUrl?: string;
-    }>(`/user/${userId}/upload-image?type=${type}`, formData, {
+    }>(`/users/${userId}/upload-image?type=${type}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -106,11 +108,54 @@ export class UserRepositoryImpl implements IUserRepository {
     newPassword: string
   ): Promise<{ success: boolean }> {
     const response = await apiService.patch<{ success: boolean }>(
-      `/user/${userId}/update-password`,
+      `/users/${userId}/update-password`,
       {
         currentPassword,
         newPassword,
       }
+    );
+    return response.data;
+  }
+
+  async follow(targetId: string): Promise<{ success: boolean }> {
+    const response = await apiService.post<{ success: boolean }>(
+      `/users/follow`,
+      { targetId }
+    );
+    return response.data;
+  }
+
+  async unfollow(targetId: string): Promise<{ success: boolean }> {
+    const response = await apiService.delete<{ success: boolean }>(
+      `/users/follow?targetId=${targetId}`
+    );
+    return response.data;
+  }
+
+  async getFollowers(userId: string): Promise<IUserInfoInFollow[]> {
+    const response = await apiService.get<IUserInfoInFollow[]>(
+      `/users/${userId}/followers`
+    );
+    return response.data;
+  }
+
+  async getFollowing(userId: string): Promise<IUserInfoInFollow[]> {
+    const response = await apiService.get<IUserInfoInFollow[]>(
+      `/users/${userId}/following`
+    );
+    return response.data;
+  }
+
+  async isFollowing(targetId: string): Promise<{ isFollowing: boolean }> {
+    const response = await apiService.get<{ isFollowing: boolean }>(
+      `/users/${targetId}/follow/status`
+    );
+    return response.data;
+  }
+
+  async getUserProfile(profileId: string): Promise<IProfileInfo> {
+    const response = await apiService.get<IProfileInfo>(
+      `/profiles/${profileId}`
     );
     return response.data;
   }

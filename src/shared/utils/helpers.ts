@@ -38,7 +38,6 @@ export const isChanged = (
     const updateValue = update[key];
 
     if (originValue !== updateValue) {
-      console.log(key);
       return true;
     }
 

@@ -2,6 +2,13 @@ import { Input } from "@/presentation/shadcn-ui/components/ui/input";
 import React, { useState, useCallback, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import { ButtonWithLoading } from "../button/ButtonWithLoading";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/presentation/shadcn-ui/components/ui/dialog";
 
 type CroppedArea = {
   x: number;
@@ -12,6 +19,8 @@ type CroppedArea = {
 
 type UploadImageProps = {
   initialImageUrl?: string;
+  popupTitle?: string;
+  popupSubTitle?: string;
   aspectRatio?: number;
   cropShape?: "rect" | "round";
   onUploaded: (payload: {
@@ -22,11 +31,14 @@ type UploadImageProps = {
 
 export function UploadImage({
   initialImageUrl,
+  popupTitle,
+  popupSubTitle,
   aspectRatio = 1,
   cropShape = "rect",
   onUploaded,
 }: UploadImageProps) {
   const [file, setFile] = useState<File | null>(null);
+  const [isOpenPopup, setOpenPopup] = useState<boolean>(false);
   const [imageSource, setImageSource] = useState<string | null>(null);
   const [cropPosition, setCropPosition] = useState({ x: 0, y: 0 });
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -44,6 +56,7 @@ export function UploadImage({
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setImageSource(null);
+      setOpenPopup(true);
       setCropPosition({ x: 0, y: 0 });
       setZoomLevel(1);
       setCroppedAreaPixels(null);
@@ -55,6 +68,8 @@ export function UploadImage({
         setFile(e.target.files![0]);
       };
     }
+
+    e.target.value = "";
   };
 
   const onCropComplete = useCallback(
@@ -113,6 +128,7 @@ export function UploadImage({
       setCroppedAreaPixels(null);
     }
     setLoading(false);
+    setOpenPopup(false);
   };
 
   return (
@@ -125,24 +141,33 @@ export function UploadImage({
       />
 
       {imageSource && (
-        <div className="relative w-full h-64 bg-black">
-          <Cropper
-            image={imageSource}
-            crop={cropPosition}
-            zoom={zoomLevel}
-            aspect={aspectRatio}
-            cropShape={cropShape}
-            onCropChange={setCropPosition}
-            onZoomChange={setZoomLevel}
-            onCropComplete={onCropComplete}
-          />
-        </div>
-      )}
-
-      {imageSource && (
-        <ButtonWithLoading onClick={handleUpload} isLoading={loading}>
-          {loading ? "Đang cập nhật..." : "Lưu ảnh"}
-        </ButtonWithLoading>
+        <Dialog open={isOpenPopup} onOpenChange={setOpenPopup}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-left">{popupTitle}</DialogTitle>
+              {popupSubTitle && (
+                <DialogDescription className="text-left">
+                  {popupSubTitle}
+                </DialogDescription>
+              )}
+            </DialogHeader>
+            <div className="relative w-full h-64 bg-black">
+              <Cropper
+                image={imageSource}
+                crop={cropPosition}
+                zoom={zoomLevel}
+                aspect={aspectRatio}
+                cropShape={cropShape}
+                onCropChange={setCropPosition}
+                onZoomChange={setZoomLevel}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+            <ButtonWithLoading onClick={handleUpload} isLoading={loading}>
+              {loading ? "Đang cập nhật..." : "Lưu ảnh"}
+            </ButtonWithLoading>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

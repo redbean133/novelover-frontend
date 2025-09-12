@@ -6,7 +6,7 @@ import { OnlyGuestRoute } from "./OnlyGuest.route";
 import { RegisterView } from "../views/register/Register.view";
 import { ProfileView } from "../views/profile/Profile.view";
 import { ManageProfileView } from "../views/manage-profile/ManageProfile.view";
-import { VerifyEmailView } from "../views/profile/VerifyEmail.view";
+import { VerifyEmailView } from "../views/manage-profile/VerifyEmail.view";
 
 export const router = createBrowserRouter([
   {

@@ -14,6 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/presentation/shadcn-ui/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/presentation/shadcn-ui/components/ui/dropdown-menu";
 import { Input } from "@/presentation/shadcn-ui/components/ui/input";
 import { Label } from "@/presentation/shadcn-ui/components/ui/label";
 import {
@@ -27,8 +34,13 @@ import {
 } from "@/presentation/shadcn-ui/components/ui/select";
 import { Textarea } from "@/presentation/shadcn-ui/components/ui/textarea";
 import { ManageProfileViewModel } from "@/presentation/viewmodels/manage-profile/ManageProfile.viewmodel";
-import { Gender } from "@/shared/constants/constants";
+import {
+  defaultAvatarUrl,
+  defaultCoverUrl,
+  Gender,
+} from "@/shared/constants/constants";
 import { useSelector } from "react-redux";
+import menuIcon from "@/assets/icon/menuIcon.svg";
 
 export const ManageProfileView = () => {
   const {
@@ -44,6 +56,8 @@ export const ManageProfileView = () => {
     onConfirmPasswordChange,
     onSubmitFormChangePassword,
     setOpenChangePasswordPopup,
+    onClickViewProfile,
+    handleLogout,
   } = ManageProfileViewModel();
   const originProfile = useSelector((state: RootState) => state.user.current);
   const manageProfile = useSelector(
@@ -55,6 +69,25 @@ export const ManageProfileView = () => {
     <>
       <header className="flex flex-row items-center justify-between">
         <H1>Tài khoản</H1>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon" className="size-8">
+              <img src={menuIcon} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-36" align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={onClickViewProfile}>
+                Trang cá nhân
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={handleLogout}>
+                Đăng xuất
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
       <main className="flex flex-col gap-4 mt-6">
         <div className="flex flex-col gap-2">
@@ -166,6 +199,8 @@ export const ManageProfileView = () => {
           <UploadImage
             onUploaded={uploadAvatar}
             initialImageUrl={manageProfile.avatarUrl}
+            popupTitle="Ảnh đại diện"
+            popupSubTitle="Sau khi lưu ảnh, ảnh đại diện mới sẽ được cập nhật trên trang cá nhân của bạn."
           ></UploadImage>
         </div>
 
@@ -175,9 +210,31 @@ export const ManageProfileView = () => {
           </Label>
           <UploadImage
             onUploaded={uploadCover}
-            aspectRatio={3 / 2}
+            aspectRatio={2 / 1}
             initialImageUrl={manageProfile.coverUrl}
+            popupTitle="Ảnh bìa"
+            popupSubTitle="Sau khi lưu ảnh, ảnh bìa mới sẽ được cập nhật trên trang cá nhân của bạn."
           ></UploadImage>
+        </div>
+
+        <div>
+          <div
+            className="aspect-[2/1] bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${
+                manageProfile.coverUrl || defaultCoverUrl
+              })`,
+            }}
+          />
+          <div className="-mt-16 flex flex-col gap-2">
+            <div className="flex justify-center">
+              <img
+                src={manageProfile.avatarUrl || defaultAvatarUrl}
+                alt="avatar"
+                className="w-28 h-28 rounded-full border-4 border-white object-cover shadow"
+              />
+            </div>
+          </div>
         </div>
 
         <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700"></hr>

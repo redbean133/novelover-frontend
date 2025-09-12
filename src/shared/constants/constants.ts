@@ -21,4 +21,22 @@ export const AccountStatus = {
 
 export type AccountStatus = (typeof AccountStatus)[keyof typeof AccountStatus];
 
-export const defaultAvatarUrl = "https://github.com/shadcn.png";
+export const defaultCoverUrl =
+  "https://res.cloudinary.com/dlmrbvtbp/image/upload/v1757043303/user-cover/p5bwrsqq3wlhgvgoulov.jpg";
+
+export const defaultAvatarUrl =
+  "https://res.cloudinary.com/dlmrbvtbp/image/upload/v1757041917/default-avatar_om15xg.jpg";
+
+export const formatNumber = Intl.NumberFormat("en", {
+  notation: "compact",
+}).format;
+
+export const formatDate = (time: string | Date | number) => {
+  const date = new Date(time);
+  const formattedDate = new Intl.DateTimeFormat("vi-VN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+  return formattedDate;
+};

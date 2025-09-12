@@ -1,3 +1,5 @@
+import type { IUserInfoInFollow } from "../entities/follow.entity";
+import type { IProfileInfo } from "../entities/profile.entity";
 import type {
   ILoginResponse,
   IUpdateUserDto,
@@ -44,4 +46,16 @@ export interface IUserRepository {
     currentPassword: string,
     newPassword: string
   ) => Promise<{ success: boolean }>;
+
+  follow: (targetId: string) => Promise<{ success: boolean }>;
+
+  unfollow: (targetId: string) => Promise<{ success: boolean }>;
+
+  getFollowers: (userId: string) => Promise<IUserInfoInFollow[]>;
+
+  getFollowing: (userId: string) => Promise<IUserInfoInFollow[]>;
+
+  isFollowing: (targetId: string) => Promise<{ isFollowing: boolean }>;
+
+  getUserProfile: (profileId: string) => Promise<IProfileInfo>;
 }
