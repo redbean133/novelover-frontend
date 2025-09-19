@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import { UserUseCase } from "@/domain/usecases/user.usecase";
 import { UserRepositoryImpl } from "@/data/repositories-implementation/user.repositoryImpl";
 import { updateCurrentUser } from "../redux/slices/user.slice";
@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import type { RootState } from "../redux/store";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { BottomNavigationBar } from "../components/navigation/BottomNavigationBar";
+import ScrollToTop from "../components/scroll-to-top/ScrollToTop";
 
 export const Root = () => {
   const dispatch = useDispatch();
@@ -63,7 +64,17 @@ export const Root = () => {
     <div className="flex justify-center min-h-svh">
       <div className="w-full pt-8 pb-16 px-5">
         <Outlet />
-        <Toaster position="top-right" />
+        <ScrollRestoration />
+        <Toaster
+          position="top-left"
+          toastOptions={{
+            style: {
+              fontSize: "0.875rem",
+              fontWeight: "600",
+            },
+          }}
+        />
+        <ScrollToTop />
         <BottomNavigationBar />
       </div>
     </div>

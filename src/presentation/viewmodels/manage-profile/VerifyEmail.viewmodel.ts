@@ -14,7 +14,7 @@ export const VerifyEmailViewModel = () => {
   const verifyEmail = async () => {
     if (!token) {
       toast.error("Không tìm thấy verify email token");
-      navigate("/");
+      return navigate("/");
     }
 
     try {

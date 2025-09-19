@@ -3,9 +3,11 @@ import { ProfileUserInfo } from "./ProfileUserInfo";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/presentation/redux/store";
 import { UserListPopup } from "@/presentation/components/user/UserListPopup";
+import { LoadingElement } from "@/presentation/components/loading/LoadingElement";
 
 export const ProfileView = () => {
   const {
+    isLoadingProfile,
     isOpenFollowPopup,
     isLoadingFollowList,
     followList,
@@ -23,13 +25,17 @@ export const ProfileView = () => {
   } = ProfileViewModel();
   return (
     <>
-      <ProfileUserInfo
-        goToManageProfilePage={goToManageProfilePage}
-        follow={onFollowProfile}
-        unfollow={onUnfollowProfile}
-        getFollowers={getFollowers}
-        getFollowing={getFollowing}
-      />
+      {isLoadingProfile ? (
+        <LoadingElement />
+      ) : (
+        <ProfileUserInfo
+          goToManageProfilePage={goToManageProfilePage}
+          follow={onFollowProfile}
+          unfollow={onUnfollowProfile}
+          getFollowers={getFollowers}
+          getFollowing={getFollowing}
+        />
+      )}
       {isOpenFollowPopup && (
         <UserListPopup
           isOpen={isOpenFollowPopup}

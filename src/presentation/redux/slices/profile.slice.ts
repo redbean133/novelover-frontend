@@ -4,6 +4,7 @@ import { Gender } from "@/shared/constants/constants";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface IProfileState {
+  isLoadingProfile: boolean;
   isMyProfile: boolean;
   isFollowing: boolean;
   isUpdateFollow: boolean;
@@ -17,6 +18,7 @@ export interface IProfileState {
 }
 
 const initialState: IProfileState = {
+  isLoadingProfile: false,
   isMyProfile: false,
   isFollowing: false,
   isUpdateFollow: false,

@@ -9,6 +9,7 @@ import {
   Gender,
 } from "@/shared/constants/constants";
 import { ButtonWithLoading } from "@/presentation/components/button/ButtonWithLoading";
+import { Plus } from "lucide-react";
 
 interface IProfileUserInfoProps {
   goToManageProfilePage: () => void;
@@ -36,7 +37,6 @@ export const ProfileUserInfo = ({
     createdAt,
     followersCount = 1100000,
     followingCount = 2200,
-    worksCount = 0,
   } = useSelector((state: RootState) => state.profile.user);
   const { isMyProfile, isFollowing, isUpdateFollow } = useSelector(
     (state: RootState) => state.profile
@@ -82,13 +82,20 @@ export const ProfileUserInfo = ({
               onClick={onClickFollowButton}
               isLoading={isUpdateFollow}
             >
-              {isFollowing ? "Đang theo dõi" : "Theo dõi"}
+              {isFollowing ? (
+                <>Đang theo dõi</>
+              ) : (
+                <>
+                  <Plus />
+                  Theo dõi
+                </>
+              )}
             </ButtonWithLoading>
           )
         )}
         <div className="py-4 flex text-sm border-b-2 justify-center">
           <div className="flex gap-3 px-4 border-r-2">
-            <span className="font-semibold">{formatNumber(worksCount)}</span>
+            <span className="font-semibold">{formatNumber(1100)}</span>
             <span className="text-muted-foreground">Tác phẩm</span>
           </div>
           <div

@@ -47,9 +47,21 @@ export const ManageProfileViewModel = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const userInfo = await userUseCase.getUserInformation(currentUserId);
-      dispatch(updateCurrentUser({ ...userInfo }));
-      onChangeManageProfileState({ ...userInfo });
+      if (manageProfileState.isLoadingProfile) return;
+      try {
+        onChangeManageProfileState({ isLoadingProfile: true });
+        const userInfo = await userUseCase.getUserInformation(currentUserId);
+        dispatch(updateCurrentUser({ ...userInfo }));
+        onChangeManageProfileState({ ...userInfo });
+      } catch (error) {
+        toast.error(
+          error instanceof AxiosError
+            ? error.response?.data.message
+            : "Lỗi hệ thống"
+        );
+      } finally {
+        onChangeManageProfileState({ isLoadingProfile: false });
+      }
     };
 
     const checkPermission = () => {

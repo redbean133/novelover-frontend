@@ -45,7 +45,7 @@ export const RegisterForm = ({
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
-          <Label htmlFor="username">Tên hiển thị</Label>
+          <Label htmlFor="displayName">Tên hiển thị</Label>
           <Input
             id="displayName"
             type="text"

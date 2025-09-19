@@ -22,13 +22,25 @@ export const ProfileViewModel = () => {
     (state: RootState) => state.user.current.id
   );
   const profileUserInfo = useSelector((state: RootState) => state.profile.user);
-  const { isLoadingFollowList } = useSelector(
+  const { isLoadingFollowList, isLoadingProfile } = useSelector(
     (state: RootState) => state.profile
   );
 
   const getUserProfile = async () => {
-    const { user } = await userUseCase.getUserProfile(profileId!);
-    dispatch(updateUserProfile({ ...user }));
+    if (isLoadingProfile) return;
+    try {
+      dispatch(updateProfileState({ isLoadingProfile: true }));
+      const { user } = await userUseCase.getUserProfile(profileId!);
+      dispatch(updateUserProfile({ ...user }));
+    } catch (error) {
+      toast.error(
+        error instanceof AxiosError
+          ? error.response?.data.message
+          : "Lỗi hệ thống"
+      );
+    } finally {
+      dispatch(updateProfileState({ isLoadingProfile: false }));
+    }
   };
 
   const checkFollow = async () => {
