@@ -3,6 +3,7 @@ import type { IUpdateUserDto } from "@/domain/entities/user.entity";
 import { UserUseCase } from "@/domain/usecases/user.usecase";
 import {
   reinitChangePasswordState,
+  reinitCurrentUser,
   reinitManageProfileState,
   updateChangePasswordState,
   updateCurrentUser,
@@ -46,14 +47,25 @@ export const ManageProfileViewModel = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const userInfo = await userUseCase.getUserInformation(currentUserId);
-      dispatch(updateCurrentUser({ ...userInfo }));
-      onChangeManageProfileState({ ...userInfo });
+      if (manageProfileState.isLoadingProfile) return;
+      try {
+        onChangeManageProfileState({ isLoadingProfile: true });
+        const userInfo = await userUseCase.getUserInformation(currentUserId);
+        dispatch(updateCurrentUser({ ...userInfo }));
+        onChangeManageProfileState({ ...userInfo });
+      } catch (error) {
+        toast.error(
+          error instanceof AxiosError
+            ? error.response?.data.message
+            : "Lỗi hệ thống"
+        );
+      } finally {
+        onChangeManageProfileState({ isLoadingProfile: false });
+      }
     };
 
     const checkPermission = () => {
       if (userIdParam !== currentUserId) {
-        toast.error("Không có quyền truy cập vào trang này");
         navigate("/");
       } else {
         getUserInfo();
@@ -297,6 +309,26 @@ export const ManageProfileViewModel = () => {
     }
   };
 
+  const onClickViewProfile = () => {
+    navigate(`/users/${currentUserId}`);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await userUseCase.logout();
+    } catch (error) {
+      console.log(
+        error instanceof AxiosError
+          ? error.response?.data.message
+          : "Lỗi hệ thống"
+      );
+    } finally {
+      dispatch(reinitCurrentUser());
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("accessTokenExpiry");
+    }
+  };
+
   return {
     onChangeManageProfileState,
     onDisplayNameChange,
@@ -310,5 +342,7 @@ export const ManageProfileViewModel = () => {
     onConfirmPasswordChange,
     onSubmitFormChangePassword,
     setOpenChangePasswordPopup,
+    onClickViewProfile,
+    handleLogout,
   };
 };

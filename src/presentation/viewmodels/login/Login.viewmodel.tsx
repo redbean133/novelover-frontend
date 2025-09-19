@@ -18,8 +18,9 @@ import toast from "react-hot-toast";
 export const LoginViewModel = () => {
   const userUseCase = UserUseCase(new UserRepositoryImpl());
   const dispatch = useDispatch();
-  const { isLoading, username, password, isValidPassword, isValidUsername } =
-    useSelector((state: RootState) => state.user.login);
+  const { username, password, isValidPassword, isValidUsername } = useSelector(
+    (state: RootState) => state.user.login
+  );
 
   const updateLogin = (data: Partial<IUserState["login"]>) => {
     dispatch(updateLoginState(data));

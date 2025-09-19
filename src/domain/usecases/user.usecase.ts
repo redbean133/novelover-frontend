@@ -1,3 +1,5 @@
+import { UserInfoInFollow } from "../entities/follow.entity";
+import { ProfileInfo } from "../entities/profile.entity";
 import { User, type IUpdateUserDto } from "../entities/user.entity";
 import type { IUserRepository } from "../repositories-interface/user.repository";
 
@@ -27,8 +29,6 @@ export const UserUseCase = (userRepository: IUserRepository) => {
 
   const logout = async () => {
     await userRepository.logout();
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("accessTokenExpiry");
   };
 
   const getUserInformation = async (userId: string) => {
@@ -79,6 +79,36 @@ export const UserUseCase = (userRepository: IUserRepository) => {
     return response;
   };
 
+  const follow = async (targetId: string) => {
+    const response = await userRepository.follow(targetId);
+    return response;
+  };
+
+  const unfollow = async (targetId: string) => {
+    const response = await userRepository.unfollow(targetId);
+    return response;
+  };
+
+  const getFollowers = async (userId: string) => {
+    const response = await userRepository.getFollowers(userId);
+    return response.map((userInfo) => new UserInfoInFollow(userInfo));
+  };
+
+  const getFollowing = async (userId: string) => {
+    const response = await userRepository.getFollowing(userId);
+    return response.map((userInfo) => new UserInfoInFollow(userInfo));
+  };
+
+  const isFollowing = async (targetId: string) => {
+    const response = await userRepository.isFollowing(targetId);
+    return response;
+  };
+
+  const getUserProfile = async (profileId: string) => {
+    const response = await userRepository.getUserProfile(profileId);
+    return new ProfileInfo(response);
+  };
+
   return {
     login,
     register,
@@ -91,5 +121,11 @@ export const UserUseCase = (userRepository: IUserRepository) => {
     updateUser,
     uploadImage,
     updatePassword,
+    follow,
+    unfollow,
+    getFollowers,
+    getFollowing,
+    isFollowing,
+    getUserProfile,
   };
 };

@@ -116,3 +116,15 @@ export const validateNewPassword = (
   }
   return { isValid: true, message: "Mật khẩu mới hợp lệ" };
 };
+
+export const validateRequiredTextInput = (
+  value: string,
+  fieldName?: string
+): IValidationResult => {
+  if (!value)
+    return {
+      isValid: false,
+      message: `${fieldName || "Trường này"} không được để trống`,
+    };
+  return { isValid: true, message: `${fieldName || "Trường này"} hợp lệ` };
+};

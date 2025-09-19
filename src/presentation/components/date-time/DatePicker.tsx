@@ -12,7 +12,7 @@ import { Calendar } from "@/presentation/shadcn-ui/components/ui/calendar";
 interface IDatePickerProps {
   title: string;
   date?: Date;
-  onSelectDate: (date: Date) => void;
+  onSelectDate: (date: Date | undefined) => void;
   align?: "start" | "center" | "end";
   side?: "top" | "right" | "bottom" | "left";
   minDate?: Date;
@@ -53,9 +53,10 @@ export const DatePicker = ({
         >
           <Calendar
             mode="single"
+            required={false}
             selected={date}
             captionLayout="dropdown"
-            onSelect={(selectedDate: Date) => {
+            onSelect={(selectedDate: Date | undefined) => {
               onSelectDate(selectedDate);
               setOpen(false);
             }}

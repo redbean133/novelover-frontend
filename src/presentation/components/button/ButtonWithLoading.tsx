@@ -13,7 +13,7 @@ export const ButtonWithLoading = React.forwardRef<
 >(({ isLoading = false, children, disabled, ...props }, ref) => {
   return (
     <Button ref={ref} disabled={isLoading || disabled} {...props}>
-      {isLoading && <Spinner variant="circle-filled" />}
+      {isLoading && <Spinner variant="circle" />}
       {children}
     </Button>
   );

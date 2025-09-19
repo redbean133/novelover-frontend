@@ -1,5 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import type { UserRole } from "../constants/constants";
+import { trim } from "lodash";
 
 export interface IDecodedJwt {
   exp: number;
@@ -38,10 +39,21 @@ export const isChanged = (
     const updateValue = update[key];
 
     if (originValue !== updateValue) {
-      console.log(key);
       return true;
     }
 
     return false;
   });
+};
+
+export const cleanWhitespace = (text: string): string => {
+  return trim(text).replace(/\s+/g, " ");
+};
+
+export const startCase = (text: string): string => {
+  return text
+    .trim()
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 };

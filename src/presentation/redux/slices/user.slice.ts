@@ -33,6 +33,7 @@ export interface IUserState {
   };
   current: User;
   manageProfile: User & {
+    isLoadingProfile: boolean;
     isLoadingSaveInfo: boolean;
     isLoadingVerifyEmail: boolean;
     isValidEmail: boolean;
@@ -113,6 +114,7 @@ const initialState: IUserState = {
   register: initialRegisterState,
   manageProfile: {
     ...initialCurrentState,
+    isLoadingProfile: false,
     isLoadingSaveInfo: false,
     isLoadingVerifyEmail: false,
     isValidEmail: false,
