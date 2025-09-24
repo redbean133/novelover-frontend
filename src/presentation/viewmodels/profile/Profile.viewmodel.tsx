@@ -1,14 +1,16 @@
 import { UserRepositoryImpl } from "@/data/repositories-implementation/user.repositoryImpl";
 import { UserUseCase } from "@/domain/usecases/user.usecase";
+import { reinitNovelDetailState } from "@/presentation/redux/slices/novelDetail.slice";
 import {
   reinitFollowPopup,
   updateFollowStatus,
+  updateNovelsData,
   updateProfileState,
   updateUserProfile,
 } from "@/presentation/redux/slices/profile.slice";
 import type { RootState } from "@/presentation/redux/store";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,7 +19,7 @@ export const ProfileViewModel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id: profileId } = useParams();
-  const userUseCase = UserUseCase(new UserRepositoryImpl());
+  const userUseCase = useMemo(() => UserUseCase(new UserRepositoryImpl()), []);
   const currentUserId = useSelector(
     (state: RootState) => state.user.current.id
   );
@@ -30,8 +32,9 @@ export const ProfileViewModel = () => {
     if (isLoadingProfile) return;
     try {
       dispatch(updateProfileState({ isLoadingProfile: true }));
-      const { user } = await userUseCase.getUserProfile(profileId!);
+      const { user, novels } = await userUseCase.getUserProfile(profileId!);
       dispatch(updateUserProfile({ ...user }));
+      dispatch(updateNovelsData({ ...novels }));
     } catch (error) {
       toast.error(
         error instanceof AxiosError
@@ -50,6 +53,7 @@ export const ProfileViewModel = () => {
   };
 
   useEffect(() => {
+    dispatch(reinitFollowPopup());
     getUserProfile();
   }, [profileId]);
 
@@ -222,6 +226,17 @@ export const ProfileViewModel = () => {
     }
   };
 
+  const scrollToNovelSection = () => {
+    const element = document.getElementById("novel-section");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const reinitNovelDetailPageData = () => {
+    dispatch(reinitNovelDetailState());
+  };
+
   return {
     goToManageProfilePage,
     getFollowers,
@@ -230,5 +245,7 @@ export const ProfileViewModel = () => {
     onFollowProfile,
     onUnfollowProfile,
     onClickFollowButtonInPopup,
+    reinitNovelDetailPageData,
+    scrollToNovelSection,
   };
 };

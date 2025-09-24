@@ -1,10 +1,10 @@
-import type { ChapterInList } from "@/domain/entities/chapter.entity";
+import type { MyChapterInList } from "@/domain/entities/chapter.entity";
 import { Badge } from "@/presentation/shadcn-ui/components/ui/badge";
 import { formatDate, formatNumber } from "@/shared/constants/constants";
 import { Eye, Heart } from "lucide-react";
 
 interface IMyChapterItemProps {
-  chapter: ChapterInList;
+  chapter: MyChapterInList;
   goToEditChapter: (chapterId: number) => void;
 }
 
@@ -23,11 +23,11 @@ export const MyChapterItem = ({
       <div className="text-sm text-muted-foreground flex gap-2 mb-1">
         <span className="flex gap-1 items-center">
           <Eye className="size-[1em]" />
-          {formatNumber(chapter.numberOfViews)}
+          {formatNumber(chapter.numberOfViews, { short: true })}
         </span>
         <span className="flex gap-1 items-center">
           <Heart className="size-[1em]" />
-          {formatNumber(chapter.numberOfVotes)}
+          {formatNumber(chapter.numberOfVotes, { short: true })}
         </span>
         {chapter.isPublished ? (
           <Badge className="bg-[#41AB5D] text-white">Đã đăng</Badge>

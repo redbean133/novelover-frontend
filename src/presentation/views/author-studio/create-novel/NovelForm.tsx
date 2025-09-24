@@ -107,7 +107,7 @@ export const NovelForm = () => {
       <div className="flex-1 flex flex-col">
         <Label className="font-semibold mb-2">Thể loại *</Label>
         <p className="text-xs text-gray-500 mb-2">
-          Được phép chọn tối đa 3 thể loại truyện
+          Được phép chọn tối đa 3 thể loại truyện.
         </p>
         {genresData.length > 0 && (
           <MultiSelect
@@ -130,6 +130,10 @@ export const NovelForm = () => {
         <Label htmlFor="description" className="font-semibold">
           Giới thiệu
         </Label>
+        <p className="text-xs text-gray-500 mb-2">
+          Không yêu cầu khi lưu bản thảo, nhưng bắt buộc phải thêm trước khi
+          xuất bản truyện.
+        </p>
         <Textarea
           className="min-h-[120px]"
           id="description"

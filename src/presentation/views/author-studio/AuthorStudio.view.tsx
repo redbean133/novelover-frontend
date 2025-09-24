@@ -17,6 +17,7 @@ import {
   paginationSizeArray,
 } from "@/shared/constants/constants";
 import { MyPagination } from "@/presentation/components/pagination/MyPagination";
+import { Helmet } from "react-helmet";
 
 export const AuthorStudioView = () => {
   const {
@@ -62,6 +63,9 @@ export const AuthorStudioView = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Truyện của tôi - Novelover</title>
+      </Helmet>
       <header className="flex flex-row items-center justify-between">
         <H1>Tác phẩm</H1>{" "}
         <Button variant="outline" size="sm" onClick={handleClickCreateNovel}>

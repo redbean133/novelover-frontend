@@ -16,6 +16,7 @@ import { defaultAvatarUrl } from "@/shared/constants/constants";
 import { isEmpty } from "lodash";
 import { useSelector } from "react-redux";
 import { LoadingElement } from "../loading/LoadingElement";
+import { Link } from "react-router-dom";
 
 interface IUserItemInPopup {
   user: UserInfoInFollow;
@@ -32,7 +33,7 @@ export const UserItemInPopup = ({
 
   return (
     <div className="flex items-center justify-between text-sm py-2 border-y-1">
-      <div className="flex gap-3 items-center">
+      <Link to={`/users/${user.id}`} className="flex gap-3 items-center">
         <Avatar>
           <AvatarImage src={user.avatarUrl || defaultAvatarUrl} />
         </Avatar>
@@ -40,7 +41,7 @@ export const UserItemInPopup = ({
           <p>{user.displayName}</p>
           <p className="text-muted-foreground">@{user.username}</p>
         </div>
-      </div>
+      </Link>
       {currentUserId && currentUserId !== user.id && (
         <Button
           variant={user.isFollowing ? "outline" : "default"}

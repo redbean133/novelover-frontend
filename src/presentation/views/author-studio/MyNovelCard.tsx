@@ -47,14 +47,18 @@ export const MyNovelCard = ({
             </p>
           )}
           <div className="text-sm text-muted-foreground flex gap-2 mb-1">
-            <span className="flex gap-1 items-center">
-              <Star className="size-[1em]" color="#FFC107" fill="#FFC107" />
-              {novel.averageRating}
-            </span>
-            <span className="flex gap-1 items-center">
-              <Eye className="size-[1em]" />
-              {formatNumber(novel.numberOfViews)}
-            </span>
+            {novel.averageRating !== "0.00" && (
+              <span className="flex gap-1 items-center">
+                <Star className="size-[1em]" color="#FFC107" fill="#FFC107" />
+                {novel.averageRating}
+              </span>
+            )}
+            {novel.numberOfViews !== 0 && (
+              <span className="flex gap-1 items-center">
+                <Eye className="size-[1em]" />
+                {formatNumber(novel.numberOfViews, { short: true })}
+              </span>
+            )}
           </div>
 
           <p className="text-sm text-indigo-400 mb-1">
@@ -72,7 +76,9 @@ export const MyNovelCard = ({
               : "Không có bản thảo"}
           </p>
           {novel.isCompleted && (
-            <Badge className="bg-[#41AB5D] text-white">Đã hoàn thành</Badge>
+            <Badge className="bg-[#41AB5D] text-white font-semibold">
+              Đã hoàn thành
+            </Badge>
           )}
         </div>
         {!novel.isCompleted && (

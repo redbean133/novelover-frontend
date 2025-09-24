@@ -13,6 +13,7 @@ import { Plus } from "lucide-react";
 
 interface IProfileUserInfoProps {
   goToManageProfilePage: () => void;
+  scrollToNovelSection: () => void;
   follow: () => void;
   unfollow: () => void;
   getFollowers: () => void;
@@ -21,6 +22,7 @@ interface IProfileUserInfoProps {
 
 export const ProfileUserInfo = ({
   goToManageProfilePage,
+  scrollToNovelSection,
   follow,
   unfollow,
   getFollowers,
@@ -35,9 +37,12 @@ export const ProfileUserInfo = ({
     gender,
     birthday,
     createdAt,
-    followersCount = 1100000,
-    followingCount = 2200,
+    followersCount,
+    followingCount,
   } = useSelector((state: RootState) => state.profile.user);
+  const { total: countNovels } = useSelector(
+    (state: RootState) => state.profile.novels
+  );
   const { isMyProfile, isFollowing, isUpdateFollow } = useSelector(
     (state: RootState) => state.profile
   );
@@ -94,8 +99,11 @@ export const ProfileUserInfo = ({
           )
         )}
         <div className="py-4 flex text-sm border-b-2 justify-center">
-          <div className="flex gap-3 px-4 border-r-2">
-            <span className="font-semibold">{formatNumber(1100)}</span>
+          <div
+            className="flex gap-3 px-4 border-r-2 select-none"
+            onClick={scrollToNovelSection}
+          >
+            <span className="font-semibold">{formatNumber(countNovels)}</span>
             <span className="text-muted-foreground">Tác phẩm</span>
           </div>
           <div
@@ -105,7 +113,7 @@ export const ProfileUserInfo = ({
             }}
           >
             <span className="font-semibold">
-              {formatNumber(followersCount)}
+              {formatNumber(followersCount, { short: true })}
             </span>
             <span className="text-muted-foreground">Người theo dõi</span>
           </div>
@@ -116,14 +124,14 @@ export const ProfileUserInfo = ({
             }}
           >
             <span className="font-semibold">
-              {formatNumber(followingCount)}
+              {formatNumber(followingCount, { short: true })}
             </span>
             <span className="text-muted-foreground">Đang theo dõi</span>
           </div>
         </div>
       </div>
 
-      <div className="py-4 flex flex-col ">
+      <div className="py-4 flex flex-col">
         {about && <p className="text-sm mb-2 whitespace-pre-line">{about}</p>}
         <div className="text-xs text-muted-foreground mb-1  ">
           {gender !== Gender.Unknown && (

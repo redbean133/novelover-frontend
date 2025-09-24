@@ -1,9 +1,9 @@
 import { AuthorRepositoryImpl } from "@/data/repositories-implementation/author.repositoryImpl";
 import { GenreRepositoryImpl } from "@/data/repositories-implementation/genre.repositoryImpl";
-import { NovelRepositoryImpl } from "@/data/repositories-implementation/novel.repositoryImpl";
+import { MyNovelRepositoryImpl } from "@/data/repositories-implementation/myNovel.repositoryImpl";
 import { AuthorUseCase } from "@/domain/usecases/author.usecase";
 import { GenreUseCase } from "@/domain/usecases/genre.usecase";
-import { NovelUseCase } from "@/domain/usecases/novel.usecase";
+import { MyNovelUseCase } from "@/domain/usecases/myNovel.usecase";
 import {
   updateNovelDetailData,
   updateNovelFormData,
@@ -22,9 +22,18 @@ import { useDebounce } from "use-debounce";
 export const NovelFormViewModel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const authorUseCase = AuthorUseCase(new AuthorRepositoryImpl());
-  const genreUseCase = GenreUseCase(new GenreRepositoryImpl());
-  const novelUseCase = NovelUseCase(new NovelRepositoryImpl());
+  const authorUseCase = useMemo(
+    () => AuthorUseCase(new AuthorRepositoryImpl()),
+    []
+  );
+  const genreUseCase = useMemo(
+    () => GenreUseCase(new GenreRepositoryImpl()),
+    []
+  );
+  const myNovelUseCase = useMemo(
+    () => MyNovelUseCase(new MyNovelRepositoryImpl()),
+    []
+  );
   const { id: novelId } = useParams();
   const isFirstRender = useRef(true);
 
@@ -189,7 +198,7 @@ export const NovelFormViewModel = () => {
   const onSubmitNewNovel = async () => {
     try {
       dispatch(updateNovelFormData({ isLoadingSubmitForm: true }));
-      const newNovel = await novelUseCase.createNovel({
+      const newNovel = await myNovelUseCase.createNovel({
         title: cleanWhitespace(title),
         authorName: startCase(authorName),
         isOriginal,
@@ -217,7 +226,7 @@ export const NovelFormViewModel = () => {
 
     try {
       dispatch(updateNovelFormData({ isLoadingSubmitForm: true }));
-      const updatedNovel = await novelUseCase.updateMyNovel(+novelId, {
+      const updatedNovel = await myNovelUseCase.updateMyNovel(+novelId, {
         title: cleanWhitespace(title),
         authorName: startCase(authorName),
         isOriginal,

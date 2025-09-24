@@ -42,6 +42,7 @@ import { useSelector } from "react-redux";
 import { LoadingElement } from "@/presentation/components/loading/LoadingElement";
 import { Ellipsis } from "lucide-react";
 import { ButtonWithLoading } from "@/presentation/components/button/ButtonWithLoading";
+import { Helmet } from "react-helmet";
 
 export const ManageProfileView = () => {
   const {
@@ -68,6 +69,9 @@ export const ManageProfileView = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{`${originProfile.displayName} - Quản lý tài khoản - Novelover`}</title>
+      </Helmet>
       <header className="flex flex-row items-center justify-between">
         <H1>Tài khoản</H1>
         <DropdownMenu>

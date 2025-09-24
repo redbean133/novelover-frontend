@@ -32,9 +32,22 @@ export const defaultAvatarUrl =
 export const defaultNovelCoverUrl =
   "https://res.cloudinary.com/dlmrbvtbp/image/upload/v1757670849/a549fc16ade7791fe82311973f1f6947_dxzomh.jpg";
 
-export const formatNumber = Intl.NumberFormat("en", {
-  notation: "compact",
-}).format;
+type FormatNumberOptions = {
+  short?: boolean; // if true: 1K, 1M; false: 1.000, 1.000.000
+};
+
+const compactFormatter = new Intl.NumberFormat("en", { notation: "compact" });
+const fullFormatter = new Intl.NumberFormat("vi-VN");
+
+export const formatNumber = (
+  num: number,
+  options: FormatNumberOptions = {}
+): string => {
+  if (options.short) {
+    return compactFormatter.format(num);
+  }
+  return fullFormatter.format(num);
+};
 
 export const formatDate = (
   time: string | Date | number,

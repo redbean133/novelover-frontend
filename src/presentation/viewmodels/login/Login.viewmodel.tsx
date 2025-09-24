@@ -11,12 +11,12 @@ import { validatePassword, validateUsername } from "@/shared/utils/validate";
 import { useDispatch, useSelector } from "react-redux";
 import { decodeJwt } from "@/shared/utils/helpers";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 
 export const LoginViewModel = () => {
-  const userUseCase = UserUseCase(new UserRepositoryImpl());
+  const userUseCase = useMemo(() => UserUseCase(new UserRepositoryImpl()), []);
   const dispatch = useDispatch();
   const { username, password, isValidPassword, isValidUsername } = useSelector(
     (state: RootState) => state.user.login

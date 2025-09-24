@@ -1,8 +1,7 @@
 import type { Sort } from "@/shared/constants/constants";
 import type {
-  Chapter,
   IChapterListResponse,
-  IUpdateChapterDto,
+  PublicChapter,
 } from "../entities/chapter.entity";
 
 export interface IChapterRepository {
@@ -13,14 +12,5 @@ export interface IChapterRepository {
     sort?: Sort;
   }) => Promise<IChapterListResponse>;
 
-  getChapterDetail: (chapterId: number) => Promise<Chapter>;
-
-  createNewChapter: (novelId: number) => Promise<Chapter>;
-
-  updateChapter: (
-    chapterId: number,
-    payload: IUpdateChapterDto
-  ) => Promise<Chapter>;
-
-  deleteChapter: (chapterId: number) => Promise<{ success: boolean }>;
+  getChapterDetail: (chapterId: number) => Promise<PublicChapter>;
 }

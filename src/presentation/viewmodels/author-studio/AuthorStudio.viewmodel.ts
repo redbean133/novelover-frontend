@@ -1,8 +1,8 @@
-import { ChapterRepositoryImpl } from "@/data/repositories-implementation/chapter.repositoryImpl";
-import { NovelRepositoryImpl } from "@/data/repositories-implementation/novel.repositoryImpl";
+import { MyChapterRepositoryImpl } from "@/data/repositories-implementation/myChapter.repositoryImpl";
+import { MyNovelRepositoryImpl } from "@/data/repositories-implementation/myNovel.repositoryImpl";
 import { initialGetNovelsResponse } from "@/domain/entities/novel.entity";
-import { ChapterUseCase } from "@/domain/usecases/chapter.usecase";
-import { NovelUseCase } from "@/domain/usecases/novel.usecase";
+import { MyChapterUseCase } from "@/domain/usecases/myChapter.usecase";
+import { MyNovelUseCase } from "@/domain/usecases/myNovel.usecase";
 import {
   reinitNovelDetailData,
   reinitNovelFormData,
@@ -17,12 +17,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export const AuthorStudioViewModel = () => {
-  const novelUseCase = useMemo(
-    () => NovelUseCase(new NovelRepositoryImpl()),
+  const myNovelUseCase = useMemo(
+    () => MyNovelUseCase(new MyNovelRepositoryImpl()),
     []
   );
-  const chapterUseCase = useMemo(
-    () => ChapterUseCase(new ChapterRepositoryImpl()),
+  const myChapterUseCase = useMemo(
+    () => MyChapterUseCase(new MyChapterRepositoryImpl()),
     []
   );
   const { tab, novels, countRender, isLoading } = useSelector(
@@ -35,7 +35,7 @@ export const AuthorStudioViewModel = () => {
     if (isLoading) return;
     try {
       dispatch(updateMyNovelsState({ isLoading: true }));
-      const result = await novelUseCase.getMyNovels(
+      const result = await myNovelUseCase.getMyNovels(
         tab,
         novels.page,
         novels.limit
@@ -76,7 +76,7 @@ export const AuthorStudioViewModel = () => {
 
   const handleClickNewChapter = async (novelId: number) => {
     try {
-      const newChapter = await chapterUseCase.createNewChapter(novelId);
+      const newChapter = await myChapterUseCase.createNewChapter(novelId);
       if (newChapter) {
         navigate(`/chapters/${newChapter.id}/edit`);
       }

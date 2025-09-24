@@ -1,8 +1,4 @@
-export interface AuthorWithoutBiography {
+export interface Author {
   id: number;
   name: string;
-}
-
-export interface Author extends AuthorWithoutBiography {
-  biography: string;
 }

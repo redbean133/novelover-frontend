@@ -1,4 +1,5 @@
 import type { Gender } from "@/shared/constants/constants";
+import type { Novel } from "./novel.entity";
 
 export interface IUserPublicInfo {
   id: string;
@@ -45,12 +46,15 @@ export class UserPublicInfo {
 
 export interface IProfileInfo {
   user: IUserPublicInfo;
+  novels: { data: Novel[]; total: number };
 }
 
 export class ProfileInfo {
   user: UserPublicInfo;
+  novels: { data: Novel[]; total: number };
 
   constructor(data: IProfileInfo) {
     this.user = new UserPublicInfo(data.user);
+    this.novels = data.novels;
   }
 }
