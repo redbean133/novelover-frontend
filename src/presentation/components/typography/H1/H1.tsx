@@ -5,7 +5,7 @@ export const H1 = ({
 }: React.ComponentPropsWithoutRef<"h1">) => {
   return (
     <h1
-      className={`font-mono text-center text-2xl font-medium tracking-wide text-balance ${
+      className={`font-mono text-2xl font-medium tracking-wide ${
         className ?? ""
       }`}
       {...rest}

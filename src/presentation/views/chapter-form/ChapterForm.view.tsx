@@ -2,6 +2,7 @@ import { ButtonWithLoading } from "@/presentation/components/button/ButtonWithLo
 import { LoadingElement } from "@/presentation/components/loading/LoadingElement";
 import { H1 } from "@/presentation/components/typography/H1/H1";
 import type { RootState } from "@/presentation/redux/store";
+import { Badge } from "@/presentation/shadcn-ui/components/ui/badge";
 import { Button } from "@/presentation/shadcn-ui/components/ui/button";
 import {
   Dialog,
@@ -22,7 +23,8 @@ import {
 } from "@/presentation/shadcn-ui/components/ui/dropdown-menu";
 import { Textarea } from "@/presentation/shadcn-ui/components/ui/textarea";
 import { ChapterFormViewModel } from "@/presentation/viewmodels/chapter-form/ChapterForm.viewmodel";
-import { Ellipsis, TriangleAlert } from "lucide-react";
+import { Baseline, Ellipsis, TriangleAlert } from "lucide-react";
+import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 
 export const ChapterFormView = () => {
@@ -49,8 +51,13 @@ export const ChapterFormView = () => {
 
   return (
     <>
-      <header className="flex flex-row items-center justify-between">
-        <H1>Viết truyện</H1>
+      <Helmet>
+        <title>{`${chapter.title} - Viết truyện - Novelover`}</title>
+      </Helmet>
+      <header className="flex items-center justify-between gap-6">
+        <H1 className="flex-1 min-w-0 truncate block overflow-hidden">
+          Viết truyện
+        </H1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="size-8">
@@ -106,7 +113,17 @@ export const ChapterFormView = () => {
             }}
           />
           <div className="fixed bottom-12 left-0 right-0 bg-white px-5 pt-2 pb-4 flex items-center justify-between z-40">
-            <span className="text-sm text-gray-600">{numberOfWords} từ</span>
+            <div className="flex gap-2">
+              <span className="flex gap-1 items-center text-muted-foreground">
+                <Baseline className="size-[1em]" />
+                {`${numberOfWords} từ`}
+              </span>
+              {chapter.isPublished ? (
+                <Badge className="bg-[#41AB5D] text-white">Đã đăng</Badge>
+              ) : (
+                <Badge variant="secondary">Bản thảo</Badge>
+              )}
+            </div>
             <ButtonWithLoading
               isLoading={isLoadingSaveData}
               className="w-34"

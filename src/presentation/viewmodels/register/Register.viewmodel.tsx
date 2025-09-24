@@ -14,12 +14,12 @@ import {
 } from "@/shared/utils/validate";
 import { useDispatch, useSelector } from "react-redux";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const RegisterViewModel = () => {
-  const userUseCase = UserUseCase(new UserRepositoryImpl());
+  const userUseCase = useMemo(() => UserUseCase(new UserRepositoryImpl()), []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {

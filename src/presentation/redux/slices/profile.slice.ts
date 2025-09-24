@@ -1,4 +1,5 @@
 import type { UserInfoInFollow } from "@/domain/entities/follow.entity";
+import type { PublicNovelInList } from "@/domain/entities/novel.entity";
 import type { UserPublicInfo } from "@/domain/entities/profile.entity";
 import { Gender } from "@/shared/constants/constants";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
@@ -15,6 +16,11 @@ export interface IProfileState {
   followList: UserInfoInFollow[];
 
   user: UserPublicInfo;
+
+  novels: {
+    data: PublicNovelInList[];
+    total: number;
+  };
 }
 
 const initialState: IProfileState = {
@@ -41,6 +47,11 @@ const initialState: IProfileState = {
     followersCount: 0,
     followingCount: 0,
   },
+
+  novels: {
+    data: [],
+    total: 0,
+  },
 };
 
 const profileSlice = createSlice({
@@ -61,6 +72,12 @@ const profileSlice = createSlice({
       action: PayloadAction<Partial<UserPublicInfo>>
     ) => {
       state.user = { ...state.user, ...action.payload };
+    },
+    updateNovelsData: (
+      state,
+      action: PayloadAction<Partial<IProfileState["novels"]>>
+    ) => {
+      state.novels = { ...state.novels, ...action.payload };
     },
     updateFollowStatus: (
       state,
@@ -86,5 +103,6 @@ export const {
   updateUserProfile,
   reinitFollowPopup,
   updateFollowStatus,
+  updateNovelsData,
 } = profileSlice.actions;
 export default profileSlice.reducer;

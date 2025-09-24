@@ -1,14 +1,14 @@
 import { UserRepositoryImpl } from "@/data/repositories-implementation/user.repositoryImpl";
 import { UserUseCase } from "@/domain/usecases/user.usecase";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const VerifyEmailViewModel = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const userUseCase = UserUseCase(new UserRepositoryImpl());
+  const userUseCase = useMemo(() => UserUseCase(new UserRepositoryImpl()), []);
   const token = searchParams.get("token");
 
   const verifyEmail = async () => {

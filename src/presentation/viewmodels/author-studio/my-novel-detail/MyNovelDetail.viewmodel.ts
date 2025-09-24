@@ -1,8 +1,7 @@
-import { ChapterRepositoryImpl } from "@/data/repositories-implementation/chapter.repositoryImpl";
-import { NovelRepositoryImpl } from "@/data/repositories-implementation/novel.repositoryImpl";
-import type { IUpdateNovelPayload } from "@/domain/entities/novel.entity";
-import { ChapterUseCase } from "@/domain/usecases/chapter.usecase";
-import { NovelUseCase } from "@/domain/usecases/novel.usecase";
+import { MyChapterRepositoryImpl } from "@/data/repositories-implementation/myChapter.repositoryImpl";
+import { MyNovelRepositoryImpl } from "@/data/repositories-implementation/myNovel.repositoryImpl";
+import { MyChapterUseCase } from "@/domain/usecases/myChapter.usecase";
+import { MyNovelUseCase } from "@/domain/usecases/myNovel.usecase";
 import {
   updateChapterListData,
   updateNovelDetailData,
@@ -18,12 +17,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export const MyNovelDetailViewModel = () => {
   const { id: novelId } = useParams();
-  const novelUseCase = useMemo(
-    () => NovelUseCase(new NovelRepositoryImpl()),
+  const myNovelUseCase = useMemo(
+    () => MyNovelUseCase(new MyNovelRepositoryImpl()),
     []
   );
-  const chapterUseCase = useMemo(
-    () => ChapterUseCase(new ChapterRepositoryImpl()),
+  const myChapterUseCase = useMemo(
+    () => MyChapterUseCase(new MyChapterRepositoryImpl()),
     []
   );
   const dispatch = useDispatch();
@@ -70,10 +69,9 @@ export const MyNovelDetailViewModel = () => {
     if (isLoading) return;
     try {
       dispatch(updateNovelDetailData({ isLoading: true }));
-      const novelDetailData = await novelUseCase.getMyNovelDetail(+novelId!);
-      dispatch(updateNovelDetailData(novelDetailData));
-      const { title, isOriginal, author, description, genres } =
-        novelDetailData.novel;
+      const novel = await myNovelUseCase.getMyNovelDetail(+novelId!);
+      dispatch(updateNovelDetailData({ novel }));
+      const { title, isOriginal, author, description, genres } = novel;
       dispatch(
         updateNovelFormData({
           title,
@@ -103,11 +101,12 @@ export const MyNovelDetailViewModel = () => {
 
     try {
       dispatch(updateNovelDetailData({ isLoadingChapters: true }));
-      const result = await chapterUseCase.getAllChaptersOfNovel({
+      const result = await myChapterUseCase.getAllChaptersOfNovel({
         novelId: +novelId,
         page: chapterListData.page,
         limit: chapterListData.limit,
         sort: chapterListData.sort,
+        isPublishedOnly: false,
       });
       dispatch(updateChapterListData(result));
     } catch (error) {
@@ -134,12 +133,41 @@ export const MyNovelDetailViewModel = () => {
     dispatch(updateNovelDetailData({ isShowDeleteConfirmPopup: open }));
   };
 
-  const updateNovel = async (payload: IUpdateNovelPayload) => {
+  const publishNovel = async (isPublished: boolean) => {
     if (!novelId) return;
 
     try {
       dispatch(updateNovelDetailData({ isLoadingConfirm: true }));
-      const updatedNovel = await novelUseCase.updateMyNovel(+novelId, payload);
+      const updatedNovel = await myNovelUseCase.publishMyNovel(
+        +novelId,
+        isPublished
+      );
+      if (updatedNovel) {
+        toast.success("Cập nhật thành công");
+        dispatch(
+          updateNovelDetailData({ novel: updatedNovel, isEditMode: false })
+        );
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof AxiosError
+          ? error.response?.data.message
+          : "Lỗi hệ thống"
+      );
+    } finally {
+      dispatch(updateNovelDetailData({ isLoadingConfirm: false }));
+    }
+  };
+
+  const completeNovel = async (isCompleted: boolean) => {
+    if (!novelId) return;
+
+    try {
+      dispatch(updateNovelDetailData({ isLoadingConfirm: true }));
+      const updatedNovel = await myNovelUseCase.completeMyNovel(
+        +novelId,
+        isCompleted
+      );
       if (updatedNovel) {
         toast.success("Cập nhật thành công");
         dispatch(
@@ -158,12 +186,12 @@ export const MyNovelDetailViewModel = () => {
   };
 
   const onConfirmPublished = async () => {
-    await updateNovel({ isPublished: !novel.isPublished });
+    await publishNovel(!novel.isPublished);
     openConfirmPublishedPopup(false);
   };
 
   const onConfirmCompleted = async () => {
-    await updateNovel({ isCompleted: !novel.isCompleted });
+    await completeNovel(!novel.isCompleted);
     openConfirmCompletedPopup(false);
   };
 
@@ -171,7 +199,7 @@ export const MyNovelDetailViewModel = () => {
     if (!novelId) return;
     try {
       dispatch(updateNovelDetailData({ isLoadingConfirm: true }));
-      const { success } = await novelUseCase.deleteMyNovel(+novelId);
+      const { success } = await myNovelUseCase.deleteMyNovel(+novelId);
       if (success) {
         toast.success("Xoá truyện thành công");
         navigate("/my-novels");
@@ -197,7 +225,7 @@ export const MyNovelDetailViewModel = () => {
 
     const { blob, fileName } = payload;
     try {
-      const novel = await novelUseCase.uploadCover({
+      const novel = await myNovelUseCase.uploadCover({
         novelId: +novelId,
         imageBlob: blob,
         fileName,
@@ -225,7 +253,7 @@ export const MyNovelDetailViewModel = () => {
 
     try {
       dispatch(updateNovelDetailData({ isLoadingCreateNewChapter: true }));
-      const newChapter = await chapterUseCase.createNewChapter(+novelId);
+      const newChapter = await myChapterUseCase.createNewChapter(+novelId);
       if (newChapter) {
         navigate(`/chapters/${newChapter.id}/edit`);
       }
@@ -244,6 +272,10 @@ export const MyNovelDetailViewModel = () => {
     navigate(`/chapters/${chapterId}/edit`);
   };
 
+  const goToNovelDetailPage = () => {
+    navigate(`/novels/${novelId}`);
+  };
+
   return {
     chapterListRef,
     onChangeEditMode,
@@ -257,5 +289,6 @@ export const MyNovelDetailViewModel = () => {
     updateChapterListDataState,
     createNewChapter,
     goToEditChapter,
+    goToNovelDetailPage,
   };
 };

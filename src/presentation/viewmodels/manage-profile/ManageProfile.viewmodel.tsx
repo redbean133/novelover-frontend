@@ -20,7 +20,7 @@ import {
 } from "@/shared/utils/validate";
 import { AxiosError } from "axios";
 import { identity, pickBy } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -28,7 +28,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export const ManageProfileViewModel = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userUseCase = UserUseCase(new UserRepositoryImpl());
+  const userUseCase = useMemo(() => UserUseCase(new UserRepositoryImpl()), []);
   const originProfileState = useSelector(
     (state: RootState) => state.user.current
   );

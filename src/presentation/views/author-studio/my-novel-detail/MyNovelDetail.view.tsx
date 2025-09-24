@@ -43,6 +43,7 @@ import {
   SelectValue,
 } from "@/presentation/shadcn-ui/components/ui/select";
 import { MyChapterItem } from "./MyChapterItem";
+import { Helmet } from "react-helmet";
 
 export const MyNovelDetailView = () => {
   const {
@@ -70,11 +71,15 @@ export const MyNovelDetailView = () => {
     updateChapterListDataState,
     createNewChapter,
     goToEditChapter,
+    goToNovelDetailPage,
     chapterListRef,
   } = MyNovelDetailViewModel();
 
   return (
     <>
+      <Helmet>
+        <title>{`${novel.title} - Truyện của tôi - Novelover`}</title>
+      </Helmet>
       <header className="flex flex-row items-center justify-between">
         <H1>Sửa truyện</H1>
         <DropdownMenu>
@@ -85,6 +90,11 @@ export const MyNovelDetailView = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-36" align="end">
             <DropdownMenuGroup>
+              {novel.isPublished && (
+                <DropdownMenuItem onClick={goToNovelDetailPage}>
+                  Xem truyện
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={() => {
                   openConfirmPublishedPopup(true);
@@ -142,7 +152,7 @@ export const MyNovelDetailView = () => {
           </div>
           <div className="mb-2">
             <Badge
-              className={`mr-2 font-bold ${
+              className={`mr-2 font-semibold ${
                 novel.isPublished ? "bg-[#41AB5D] text-white" : ""
               }`}
               variant={novel.isPublished ? "default" : "outline"}
@@ -150,7 +160,7 @@ export const MyNovelDetailView = () => {
               {novel.isPublished ? "Đã đăng tải" : "Bản thảo"}
             </Badge>
             <Badge
-              className={`mr-2 font-bold ${
+              className={`mr-2 font-semibold ${
                 novel.isCompleted ? "bg-[#41AB5D] text-white" : ""
               }`}
               variant={novel.isCompleted ? "default" : "outline"}

@@ -1,33 +1,52 @@
 import { paginationSizeArray } from "@/shared/constants/constants";
-import type { AuthorWithoutBiography } from "./author.entity";
 import type { GenreWithoutDescription } from "./genre.entity";
+import type { Author } from "./author.entity";
 
-export interface Novel {
+export interface MyNovelInList {
+  id: number;
+  title: string;
+  coverUrl: string;
+  isOriginal: boolean;
+  numberOfPublishedChapters: number;
+  numberOfChapters: number;
+  numberOfViews: number;
+  author: Author;
+  isCompleted: boolean;
+  averageRating: number;
+}
+
+export interface PublicNovelInList {
   id: number;
   title: string;
   coverUrl: string;
   isOriginal: boolean;
   contributorId: string;
-  numberOfChapters: number;
   numberOfPublishedChapters: number;
+  description: string;
+  numberOfViews: number;
+  author: Author;
+  genres: GenreWithoutDescription[];
+  isCompleted: boolean;
+  contributorName?: string;
+}
+
+export interface PublicNovel extends PublicNovelInList {
   numberOfReviews: number;
   numberOfVotes: number;
-  numberOfViews: number;
-  description: string;
   averageRating: string;
-  isPublished: boolean;
   publishedAt: Date | string;
-  isCompleted: boolean;
   completedAt: Date | string;
+}
+
+export interface FullInfoNovel extends PublicNovel {
+  isPublished: boolean;
+  numberOfChapters: number;
   createdAt: Date | string;
   lastUpdatedAt: Date | string;
   deletedAt: Date | string;
-  author: AuthorWithoutBiography;
-  genres: GenreWithoutDescription[];
-  contributorName: string;
 }
 
-export const initialNovel = {
+export const initialFullInfoNovel: FullInfoNovel = {
   id: 0,
   title: "",
   coverUrl: "",
@@ -56,7 +75,7 @@ export const initialNovel = {
 };
 
 export interface IGetNovelsResponse {
-  data: Novel[];
+  data: MyNovelInList[] | PublicNovelInList[];
   total: number;
   page: number;
   limit: number;
@@ -83,8 +102,4 @@ export interface IUpdateNovelPayload extends Partial<ICreateNovelPayload> {
   coverUrl?: string;
   isPublished?: boolean;
   isCompleted?: boolean;
-}
-
-export interface IGetMyNovelDetailResponse {
-  novel: Novel;
 }

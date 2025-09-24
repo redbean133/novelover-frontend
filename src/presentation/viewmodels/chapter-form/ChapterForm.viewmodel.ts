@@ -1,5 +1,5 @@
-import { ChapterRepositoryImpl } from "@/data/repositories-implementation/chapter.repositoryImpl";
-import { ChapterUseCase } from "@/domain/usecases/chapter.usecase";
+import { MyChapterRepositoryImpl } from "@/data/repositories-implementation/myChapter.repositoryImpl";
+import { MyChapterUseCase } from "@/domain/usecases/myChapter.usecase";
 import {
   reinitChapterDetailData,
   updateChapterDetailData,
@@ -23,8 +23,8 @@ export const ChapterFormViewModel = () => {
     isLoadingSaveData,
     chapter,
   } = useSelector((state: RootState) => state.myNovels.chapterDetail);
-  const chapterUseCase = useMemo(
-    () => ChapterUseCase(new ChapterRepositoryImpl()),
+  const myChapterUseCase = useMemo(
+    () => MyChapterUseCase(new MyChapterRepositoryImpl()),
     []
   );
   const { id: chapterId } = useParams();
@@ -38,7 +38,7 @@ export const ChapterFormViewModel = () => {
   const getChapterDetail = async () => {
     try {
       updateChapterDetailDataState({ isLoadingChapterDetail: true });
-      const chapter = await chapterUseCase.getChapterDetail(+chapterId!);
+      const chapter = await myChapterUseCase.getChapterDetail(+chapterId!);
       updateChapterDetailDataState({
         chapter,
         inputTitle: chapter.title,
@@ -79,9 +79,15 @@ export const ChapterFormViewModel = () => {
   const autoSaveChapter = async () => {
     try {
       updateChapterDetailDataState({ isLoadingSaveData: true });
-      await chapterUseCase.updateChapter(+chapterId!, {
+      const updatedChapter = await myChapterUseCase.updateChapter(+chapterId!, {
         title: debouncedTitle,
         content: debouncedContent,
+      });
+      updateChapterDetailDataState({
+        chapter: updatedChapter,
+        inputTitle: updatedChapter.title,
+        inputContent: updatedChapter.content,
+        numberOfWords: updatedChapter.numberOfWords,
       });
     } catch (error) {
       console.log(
@@ -107,9 +113,15 @@ export const ChapterFormViewModel = () => {
   const updateChapter = async () => {
     try {
       updateChapterDetailDataState({ isLoadingSaveData: true });
-      await chapterUseCase.updateChapter(+chapterId!, {
+      const updatedChapter = await myChapterUseCase.updateChapter(+chapterId!, {
         title: inputTitle,
         content: inputContent,
+      });
+      updateChapterDetailDataState({
+        chapter: updatedChapter,
+        inputTitle: updatedChapter.title,
+        inputContent: updatedChapter.content,
+        numberOfWords: updatedChapter.numberOfWords,
       });
       toast.success("Cập nhật thành công");
     } catch (error) {
@@ -134,8 +146,14 @@ export const ChapterFormViewModel = () => {
   const onConfirmPublished = async () => {
     try {
       updateChapterDetailDataState({ isLoadingConfirm: true });
-      await chapterUseCase.updateChapter(+chapterId!, {
+      const updatedChapter = await myChapterUseCase.updateChapter(+chapterId!, {
         isPublished: !chapter.isPublished,
+      });
+      updateChapterDetailDataState({
+        chapter: updatedChapter,
+        inputTitle: updatedChapter.title,
+        inputContent: updatedChapter.content,
+        numberOfWords: updatedChapter.numberOfWords,
       });
       toast.success("Cập nhật thành công");
     } catch (error) {
@@ -155,7 +173,7 @@ export const ChapterFormViewModel = () => {
 
     try {
       updateChapterDetailDataState({ isLoadingConfirm: true });
-      const { success } = await chapterUseCase.deleteChapter(+chapterId);
+      const { success } = await myChapterUseCase.deleteChapter(+chapterId);
       if (success) {
         toast.success("Xoá chương truyện thành công");
         navigate(`/my-novels/${chapter.novelId}`);

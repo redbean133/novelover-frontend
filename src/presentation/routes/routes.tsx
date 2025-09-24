@@ -14,6 +14,8 @@ import { SearchNovelView } from "../views/novel/SearchNovel.view";
 import { CreateNovelView } from "../views/author-studio/create-novel/CreateNovel.view";
 import { MyNovelDetailView } from "../views/author-studio/my-novel-detail/MyNovelDetail.view";
 import { ChapterFormView } from "../views/chapter-form/ChapterForm.view";
+import { NovelDetailView } from "../views/novel/novel-detail/NovelDetail.view";
+import { ChapterDetailView } from "../views/novel/chapter-detail/ChapterDetail.view";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +78,14 @@ export const router = createBrowserRouter([
       {
         path: "/novels",
         element: <SearchNovelView />,
+      },
+      {
+        path: "/novels/:id",
+        element: <NovelDetailView />,
+      },
+      {
+        path: "/chapters/:id",
+        element: <ChapterDetailView />,
       },
     ],
   },

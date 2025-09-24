@@ -1,14 +1,14 @@
 import {
-  initialChapter,
-  type Chapter,
-  type IChapterListResponse,
+  initialMyChapter,
+  type IMyChapterListResponse,
+  type MyChapter,
 } from "@/domain/entities/chapter.entity";
 import type { GenreWithoutDescription } from "@/domain/entities/genre.entity";
 import {
+  initialFullInfoNovel,
   initialGetNovelsResponse,
-  initialNovel,
+  type FullInfoNovel,
   type IGetNovelsResponse,
-  type Novel,
 } from "@/domain/entities/novel.entity";
 import type { Sort } from "@/shared/constants/constants";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
@@ -44,14 +44,14 @@ export interface IMyNovelsState {
   novelDetail: {
     isLoading: boolean;
     isEditMode: boolean;
-    novel: Novel;
+    novel: FullInfoNovel;
     isShowPublishedConfirmPopup: boolean;
     isShowCompletedConfirmPopup: boolean;
     isShowDeleteConfirmPopup: boolean;
     isLoadingConfirm: boolean;
 
     isLoadingChapters: boolean;
-    chapterListData: IChapterListResponse & {
+    chapterListData: IMyChapterListResponse & {
       sort: Sort;
     };
     isLoadingCreateNewChapter: boolean;
@@ -60,7 +60,7 @@ export interface IMyNovelsState {
   chapterDetail: {
     isLoadingChapterDetail: boolean;
     isLoadingSaveData: boolean;
-    chapter: Chapter;
+    chapter: MyChapter;
     isShowPublishedConfirmPopup: boolean;
     isShowDeleteConfirmPopup: boolean;
     isLoadingConfirm: boolean;
@@ -99,7 +99,7 @@ const initialState: IMyNovelsState = {
   novelDetail: {
     isLoading: false,
     isEditMode: false,
-    novel: initialNovel,
+    novel: initialFullInfoNovel,
     isShowPublishedConfirmPopup: false,
     isShowCompletedConfirmPopup: false,
     isShowDeleteConfirmPopup: false,
@@ -120,7 +120,7 @@ const initialState: IMyNovelsState = {
   chapterDetail: {
     isLoadingChapterDetail: false,
     isLoadingSaveData: false,
-    chapter: initialChapter,
+    chapter: initialMyChapter,
     isShowPublishedConfirmPopup: false,
     isShowDeleteConfirmPopup: false,
     isLoadingConfirm: false,
