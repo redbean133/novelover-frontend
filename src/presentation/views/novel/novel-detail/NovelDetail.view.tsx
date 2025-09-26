@@ -167,7 +167,7 @@ export const NovelDetailView = () => {
                 Đọc truyện
                 <ChevronsRight />
               </Button>
-              <Button variant="outline">AI tóm tắt</Button>
+              {/* <Button variant="outline">AI tóm tắt</Button> */}
             </section>
             <section id="novel-details">
               <Tabs

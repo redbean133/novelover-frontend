@@ -25,4 +25,12 @@ export class ChapterRepositoryImpl implements IChapterRepository {
     );
     return response.data;
   }
+
+  async findAudio(chapterId: number): Promise<PublicChapter> {
+    const response = await apiService.get<PublicChapter>(
+      `/chapters/${chapterId}/audio`,
+      { timeout: 600000 }
+    );
+    return response.data;
+  }
 }

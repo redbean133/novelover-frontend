@@ -17,8 +17,14 @@ export const ChapterUseCase = (chapterRepository: IChapterRepository) => {
     return response;
   };
 
+  const findAudio = async (chapterId: number) => {
+    const response = await chapterRepository.findAudio(chapterId);
+    return response;
+  };
+
   return {
     getAllChaptersOfNovel,
     getChapterDetail,
+    findAudio,
   };
 };
