@@ -37,12 +37,14 @@ export const ChapterDetailView = () => {
     isShowChapterListPopup,
     isLoadingChapterList,
     chapterList,
+    isLoadingAudio,
   } = useSelector((state: RootState) => state.chapterDetail);
   const {
     backToNovelDetailPage,
     handleChangeChapter,
     handleViewChapterList,
     changeOpenChapterListPopup,
+    findAudio,
   } = ChapterDetailViewModel();
   const isLoggedIn = !!useSelector((state: RootState) => state.user.current.id);
 
@@ -111,6 +113,22 @@ export const ChapterDetailView = () => {
             <p className="font-bold">{chapter.novelTitle}</p>
             {chapterNavigator}
             <p className="text-xl font-bold">{chapter.title}</p>
+            {!!chapter.audioUrl &&
+            chapter.audioVersion === chapter.contentVersion ? (
+              <audio controls className="w-full my-2">
+                <source src={chapter.audioUrl} type="audio/wav" />
+                Your browser does not support the audio element.
+              </audio>
+            ) : (
+              <ButtonWithLoading
+                isLoading={isLoadingAudio}
+                className="w-full my-2 h-[54px]"
+                variant="outline"
+                onClick={findAudio}
+              >
+                Tải audio chương truyện
+              </ButtonWithLoading>
+            )}
             <div className="flex justify-between text-muted-foreground text-sm my-2">
               <span className="flex gap-1 items-center">
                 <Baseline className="size-[1em]" />

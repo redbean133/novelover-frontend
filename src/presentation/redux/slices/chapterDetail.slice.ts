@@ -12,6 +12,8 @@ export interface IChapterDetailState {
   isLoadingChapterList: boolean;
   chapterList: PublicChapterInList[];
   isShowChapterListPopup: boolean;
+
+  isLoadingAudio: boolean;
 }
 
 const initialState: IChapterDetailState = {
@@ -21,6 +23,8 @@ const initialState: IChapterDetailState = {
   isLoadingChapterList: false,
   chapterList: [],
   isShowChapterListPopup: false,
+
+  isLoadingAudio: false,
 };
 
 const chapterDetailSlice = createSlice({

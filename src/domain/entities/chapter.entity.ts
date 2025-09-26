@@ -24,6 +24,9 @@ export interface PublicChapter {
   prevChapterId: number;
   nextChapterId: number;
   publishedAt: Date | string;
+  audioUrl: string;
+  audioVersion: number;
+  contentVersion: number;
 }
 
 export const initialPublicChapter: PublicChapter = {
@@ -39,6 +42,9 @@ export const initialPublicChapter: PublicChapter = {
   prevChapterId: NaN,
   nextChapterId: NaN,
   publishedAt: "",
+  audioUrl: "",
+  audioVersion: NaN,
+  contentVersion: NaN,
 };
 
 export interface MyChapter {

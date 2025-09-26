@@ -25,6 +25,7 @@ export const ChapterDetailViewModel = () => {
     isLoadingChapterList,
     isShowChapterListPopup,
     chapterList,
+    isLoadingAudio,
   } = useSelector((state: RootState) => state.chapterDetail);
   const navigate = useNavigate();
 
@@ -115,10 +116,29 @@ export const ChapterDetailViewModel = () => {
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
+  const findAudio = async () => {
+    if (!chapterId || isLoadingAudio) return;
+
+    try {
+      dispatch(updateChapterDetailStateAction({ isLoadingAudio: true }));
+      const chapter = await chapterUseCase.findAudio(+chapterId);
+      dispatch(updateChapterDetailStateAction({ chapter }));
+    } catch (error) {
+      toast.error(
+        error instanceof AxiosError
+          ? error.response?.data.message
+          : "Lỗi hệ thống"
+      );
+    } finally {
+      dispatch(updateChapterDetailStateAction({ isLoadingAudio: false }));
+    }
+  };
+
   return {
     backToNovelDetailPage,
     handleChangeChapter,
     changeOpenChapterListPopup,
     handleViewChapterList,
+    findAudio,
   };
 };

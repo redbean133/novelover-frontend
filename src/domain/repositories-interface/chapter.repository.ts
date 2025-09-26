@@ -13,4 +13,6 @@ export interface IChapterRepository {
   }) => Promise<IChapterListResponse>;
 
   getChapterDetail: (chapterId: number) => Promise<PublicChapter>;
+
+  findAudio: (chapterId: number) => Promise<PublicChapter>;
 }
